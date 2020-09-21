@@ -28,7 +28,7 @@ to create a new task, go to:
 [http://localhost:3000/home](http://localhost:3000/home) 
 
 to consume the task, go to:
-[http://localhost:3000/home](http://localhost:3000/task)
+[http://localhost:3000/task](http://localhost:3000/task)
 
 
 ## License
