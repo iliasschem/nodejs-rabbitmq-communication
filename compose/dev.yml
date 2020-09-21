@@ -1,0 +1,30 @@
+version: '3'
+services:
+  server-rmq:
+    container_name: 'server-rmq'
+    build:
+      context: ../server-rmq
+    # depends_on:
+    #   - rabbitmq
+    environment:
+      EVENT_BROKER_URL: amqp://rabbitmq
+    ports:
+      - '4000:4000'
+    command: >
+      sh -c "sh /wait_for_url.sh http://rabbitmq:15672
+      && node index.js"
+  rabbitmq:
+    container_name: 'rabbitmq'
+    image: rabbitmq:3-management
+    # hostname: my-rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+  client-rmq: 
+    container_name: 'client-rmq'
+    build:
+      context: ../client-rmq
+    environment:
+      API_URL: http://server-rmq:4000
+    ports:
+      - '3000:8080'
