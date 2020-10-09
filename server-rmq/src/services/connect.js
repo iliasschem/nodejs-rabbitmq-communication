@@ -1,6 +1,6 @@
 const env = require("../env");
 const amqp = require('amqplib');
-const { QUEUE_NAME } = require("../constants");
+const { EXCHANGE_NAME } = require("../constants");
 
 let channel = null;
 
@@ -12,9 +12,9 @@ async function connect() {
 async function getChannel(connection) {
     if(!channel){
         channel = await connection.createChannel();
-        await channel.assertQueue(QUEUE_NAME, {
-            durable: true
-        });
+        channel.assertExchange(EXCHANGE_NAME, 'topic', {
+            durable: false
+          });
         channel.prefetch(1);
     }
     return channel;

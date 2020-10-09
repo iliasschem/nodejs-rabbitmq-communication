@@ -1,12 +1,11 @@
 const {getChannel} = require('./connect');
-const {getMapTask, setTask, getTask} = require('./receive')
+const schema = require('../schema/schema');
 
 async function updateTask ( id ){
     try {
-        let mapTask = getMapTask();
+        let mapTask = schema.getMapTask();
         let msg = mapTask.get(id);
         if(msg) {
-            setTask(null);
             const channel = await getChannel();
             channel.ack(msg);
         }
@@ -14,6 +13,5 @@ async function updateTask ( id ){
         console.error(e);
     }
 }
-
 
 module.exports = updateTask;
