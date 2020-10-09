@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { gql, useQuery, useMutation, useSubscription } from '@apollo/client';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -7,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const GET_TASK = gql`
-    {
+    subscription task {
         task {
             value
             id
@@ -47,12 +46,15 @@ const UPDATE_TASK = gql`
 `;
 
 function Task(){
-    const { loading, error, data } = useQuery(GET_TASK, {
-        pollInterval: 500,
-    });
+    const { data, loading } = useSubscription(
+        GET_TASK
+    );
+
     const [updateTaskMut, {data:response}] = useMutation(UPDATE_TASK)
     const classes = useStyles();
-    const { task } = loading ? { task: null}: data ;
+
+    const data2 = loading || !data ? { task: null }: data;
+    const task = data2.task;
 
     const updateTask = (task: any) => {
         updateTaskMut({variables: {value: task.value, id: task.id}})
